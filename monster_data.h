@@ -13,8 +13,10 @@ struct Move {
 struct Monster {
 	char monster_name[50];	//モンスターの名前
 
-	int HP; //HP
-	int DP; //DP
+	int HP;		//現在のHP
+	int HP_MAX;	//HPの最大値
+	int DP;		//現在のDP
+	int DP_MAX;	//DPの最大値
 
 	struct Move m1;		//1の目の技
 	struct Move m2;		//2の目の技
@@ -42,7 +44,6 @@ extern Move move1[6] = {
 
 
 //モンスター生成
-extern struct Monster monster1 { "スライム", 10, 10, move1[0], move1[1], move1[2], move1[3], move1[4], move1[5], 10, 10 };		//スライム
-
+extern struct Monster monster1 { "スライム", 10, 10, 10, 10, move1[0], move1[1], move1[2], move1[3], move1[4], move1[5], 10, 10 };		//スライム
 
 
