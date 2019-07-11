@@ -8,6 +8,7 @@
 #include <time.h>
 #include <Windows.h>
 #include <curses.h>
+#include "monster_data.h"
 
 #define BUFFSIZE 1024
 
@@ -39,6 +40,7 @@ int main() {
 	start_color();
 
 	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_CYAN, COLOR_BLACK);
 
 
 	keypad(stdscr, TRUE);
@@ -55,6 +57,9 @@ int main() {
 		mvprintw(9, 80, "DP:%d/%d", eneDP, eneMaxDP);
 
 		mvaddstr(7, 40, "Please push A");
+		mvaddstr(6, 20, "You");
+		mvprintw(6, 90, "%s",monster1.monster_name);
+
 
 		srand((unsigned)time(NULL));
 		key = getch();
@@ -169,6 +174,9 @@ int main() {
 			mvprintw(8, 80, "HP:%d/%d", eneHP, eneMaxHP);
 			mvprintw(9, 80, "DP:%d/%d", eneDP, eneMaxDP);
 
+			mvaddstr(6, 20, "You");
+			mvprintw(6, 90, "%s", monster1.monster_name);
+
 			srand((unsigned)time(NULL));
 			if (turn == 0) {
 				mvaddstr(7, 40, "Please push A");
@@ -179,7 +187,7 @@ int main() {
 					}
 				}
 
-				myDice = rand();
+				myDice = rand()%6+1;
 
 				for (int j = 0; j <= 10; j++) {
 					mvaddstr(j + 10, 30, "+");
@@ -237,7 +245,10 @@ int main() {
 						if (i == choose) {
 							attrset(COLOR_PAIR(1));
 						}
-						mvprintw(22+i, 8 , "%d.", i);
+						if (i > myDice) {
+							attrset(COLOR_PAIR(2));
+						}
+						mvprintw(22+i, 8 , "%d.%s(%s)", i,monster1.m1.move_name,monster1.m1.move_exp);
 					}
 					refresh();
 					
@@ -247,12 +258,13 @@ int main() {
 						break;
 					}
 
-					if (key == KEY_DOWN&&choose <= 5) {
+					if (key == KEY_DOWN&&choose <= 5&&choose<myDice) {
 						choose++;
 					}
 					else if (key == KEY_UP&&choose >= 2) {
 						choose--;
 					}
+
 
 					
 				}
@@ -305,6 +317,7 @@ int main() {
 					mvaddstr(12, 82, "*");
 				}
 				refresh();
+
 			}
 
 			while (1);
