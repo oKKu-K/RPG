@@ -30,16 +30,19 @@ struct Monster {
 extern int num;
 
 //モンスター1の技リスト
-extern Move mon1_move_1{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 };
-extern Move mon1_move_2{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 };
-extern Move mon1_move_3{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 };
-extern Move mon1_move_4{ "体当たりLv.1", "相手に出た目+1のダメージを与え、自分にも2ダメージ", num + 1, -2 };
-extern Move mon1_move_5{ "打撃Lv.1", "相手に出た目のダメージ", num, -1 };
-extern Move mon1_move_6{ "打撃Lv.1", "相手に出た目のダメージ", num, -1 };
+
+extern Move move1[6] = {
+	{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 },
+	{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 },
+	{ "なにもしないLv.1", "なにもせず、DPを５ためる", 0, -5 },
+	{ "体当たりLv.1", "相手に出た目+1のダメージを与え、自分にも2ダメージ", num + 1, -2 },
+	{ "打撃Lv.1", "相手に出た目のダメージ", num, -1 },
+	{ "打撃Lv.1", "相手に出た目のダメージ", num, -1 }
+};
 
 
 //モンスター生成
-extern struct Monster monster1 { "スライム", 10, 10, mon1_move_1, mon1_move_2, mon1_move_3, mon1_move_4, mon1_move_5, mon1_move_6, 10, 10 };		//スライム
+extern struct Monster monster1 { "スライム", 10, 10, move1[0], move1[1], move1[2], move1[3], move1[4], move1[5], 10, 10 };		//スライム
 
 
 
