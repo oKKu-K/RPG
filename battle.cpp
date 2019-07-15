@@ -20,19 +20,23 @@
 	bool autoMode = false;
 
 	int choose = 1;
+	
+	int speed = 1;
 
-	int myMaxHP = 20;
+/*	int myMaxHP = 20;
 	int myHP = myMaxHP;
 	int eneMaxHP = 15;
 	int eneHP = eneMaxHP;
-	int speed = 1;
+	
 
 	int myMaxDP = 20;
 	int myDP = 0;
 	int eneMaxDP = 15;
 	int eneDP = 0;
+	*/
 
-void Roll(int judg,int Dice) {
+void Roll(int judg,int Dice) //さいころ表示
+{
 	if (judg == 0) {
 		for (int j = 0; j <= 10; j++) {
 			mvaddstr(j + 10, 30, "+");
@@ -123,15 +127,16 @@ void Roll(int judg,int Dice) {
 	}
 }
 
-void display() {
-	mvprintw(8, 30, "HP:%d/%d", myHP, myMaxHP);
-	mvprintw(9, 30, "DP:%d/%d", myDP, myMaxDP);
+void display() //画面初期化
+{
+	mvprintw(8, 30, "HP:%d/%d", p.HP, p.HP_MAX);
+	mvprintw(9, 30, "DP:%d/%d", p.DP, p.DP_MAX);
 
-	mvprintw(8, 80, "HP:%d/%d", eneHP, eneMaxHP);
-	mvprintw(9, 80, "DP:%d/%d", eneDP, eneMaxDP);
+	mvprintw(8, 80, "HP:%d/%d", monster[1].HP, monster[1].HP_MAX);
+	mvprintw(9, 80, "DP:%d/%d", monster[1].DP, monster[1].DP_MAX);
 
 	mvaddstr(6, 20, "You");
-	mvprintw(6, 90, "%s", monster1.monster_name);
+	mvprintw(6, 90, "%s", monster[1].monster_name);
 
 	mvprintw(3, 10, "(S)speed ×%d",speed);
 	if (autoMode) {
@@ -143,7 +148,8 @@ void display() {
 	refresh();
 }
 
-void modeSwitch() {
+void modeSwitch()//モード切替 
+{
 	if (autoMode) {
 		autoMode = false;
 		speed = 1;
@@ -155,7 +161,8 @@ void modeSwitch() {
 		timeout(0);
 	}
 }
-void speedSet() {
+void speedSet()//速度切り替え
+{	
 	speed = speed * 2;
 	if (speed >= 8) {
 		speed = 1;
@@ -239,7 +246,7 @@ int main() {
 			display();
 			srand((unsigned)time(NULL));
 
-			if (turn == 0) {
+			if (turn == 0) { // playerのターン
 				timeout(1);
 				choose = 1;
 				mvaddstr(7, 40, "your turn");
@@ -277,13 +284,15 @@ int main() {
 					}
 				}
 
+				myDice = 6;
+				num = myDice;
 
 
 				Roll(0, myDice);
 
 				Sleep(1000 / speed);
+
 				if (autoMode) {
-					choose = rand() % myDice + 1;
 					key = getch();
 
 					if (key == 'a') {
@@ -293,18 +302,31 @@ int main() {
 
 						mvaddstr(7, 40, "Please push Z");
 					}
-				}
-				else {
 					while (1) {
+						choose = rand() % myDice + 1;
+						if (p.m[choose - 1].DP_cons > 0 && p.DP < p.m[choose - 1].DP_cons) {
+						}
+						else {
+							break;
+						}
+					}
+					
+				}
+				else { 
+					while (1) {
+						attrset(COLOR_PAIR(0));
 						for (int i = 1; i <= 6; i++) {
-							attrset(COLOR_PAIR(0));
 							if (i == choose) {
 								attrset(COLOR_PAIR(1));
 							}
 							if (i > myDice) {
 								attrset(COLOR_PAIR(2));
 							}
-							mvprintw(22 + i, 8, "%d.%s(%s)", i, monster1.m1.move_name, monster1.m1.move_exp);
+							if (p.m[i - 1].DP_cons > 0 && p.DP < p.m[i - 1].DP_cons) {
+								attrset(COLOR_PAIR(2));
+							}
+							mvprintw(22 + i, 8, "%d:%s", i, p.m[i-1].move_name);
+							attrset(COLOR_PAIR(0));
 						}
 						refresh();
 
@@ -312,10 +334,23 @@ int main() {
 						
 						if (key == 's'&&!autoMode) {
 							speedSet();
-							attrset(COLOR_PAIR(0));
 							erase();
-							display();
 							mvaddstr(7, 40, "Please push Z");
+							for (int i = 1; i <= 6; i++) {
+								if (i == choose) {
+									attrset(COLOR_PAIR(1));
+								}
+								if (i > myDice) {
+									attrset(COLOR_PAIR(2));
+								}
+								if (p.m[i - 1].DP_cons > 0 && p.DP < p.m[i - 1].DP_cons) {
+									attrset(COLOR_PAIR(2));
+								}
+								mvprintw(22 + i, 8, "%d:%s", i, p.m[i - 1].move_name);
+								attrset(COLOR_PAIR(0));
+							}
+							display();
+							
 							Roll(0, myDice);
 						}
 
@@ -335,18 +370,42 @@ int main() {
 							break;
 						}
 
+
 						if (key == KEY_DOWN && choose <= 5 && choose < myDice) {
-							choose++;
+							for (int i = choose+1; i <= 6; i++) {
+								if (p.m[i - 1].DP_cons <= 0 || p.DP >= p.m[i - 1].DP_cons) {
+									choose = i;
+									break;
+								}
+							}
 						}
 						else if (key == KEY_UP && choose >= 2) {
-							choose--;
+							for (int i = choose-1; i >=1; i--) {
+								if (p.m[i - 1].DP_cons <= 0 || p.DP >= p.m[i - 1].DP_cons) {
+									choose = i;
+									break;
+								}
+							}
 						}
 					}
+					
 				}
+				erase();
+				monster[1].HP -= p.m[choose - 1].att_point;
+				p.DP -= p.m[choose - 1].DP_cons;
+				if (p.DP > p.DP_MAX) {
+					p.DP = p.DP_MAX;
+				}
+
+				mvprintw(7, 40, "%s", p.m[choose - 1].move_name);
+				mvprintw(7, 90, "-%d", p.m[choose - 1].att_point);
+
+				display();
+				Sleep(2000 / speed);
 				turn = 1;
 
 			}
-			else {
+			else {// 相手のターン
 				mvaddstr(7, 40, "enemy turn");
 				refresh();
 				Sleep(1000 / speed);
@@ -378,17 +437,28 @@ int main() {
 					speedSet();
 				}
 
-				choose = rand() % eneDice + 1;
+				while (1) {
+					choose = rand() % eneDice + 1;
+					if (monster[1].m[choose - 1].DP_cons > 0 && monster[1].DP < p.m[choose - 1].DP_cons) {
+					}
+					else {
+						break;
+					}
+				}
+				
 
-				num = eneDice;
-
-				myHP -= monster1.m4.att_point;
-
+				p.HP -= monster[1].m[choose-1].att_point;
+				monster[1].DP -= monster[1].m[choose - 1].DP_cons;
+				if (monster[1].DP > monster[1].DP_MAX) {
+					monster[1].DP = monster[1].DP_MAX;
+				}
 				erase();
 
-				mvprintw(7, 40, "%s", monster1.m4.move_name);
+				mvprintw(7, 40, "%s", monster[1].m[choose-1].move_name);
 
-				mvprintw(7, 30, "-%d", monster1.m4.att_point);
+				mvprintw(7, 30, "-%d", monster[1].m[choose-1].att_point);
+
+				
 
 				display();
 
@@ -406,9 +476,14 @@ int main() {
 				turn = 0;
 			}
 
-			if (myHP <= 0) {
+			if (p.HP <= 0) {
 				erase();
-				mvprintw(7, 40, "%s win", monster1.monster_name);
+				mvprintw(7, 40, "%s win", monster[1].monster_name);
+				display();
+				break;
+			}else if (monster[1].HP <= 0) {
+				erase();
+				mvaddstr(7, 40, "Player win");
 				display();
 				break;
 			}
