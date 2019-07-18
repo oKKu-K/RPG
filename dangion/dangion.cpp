@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
 				if (ab[py - 1][px] != '#') {
 					a++;
 					py--;
-					random = 0;
+					random = rand()%8;
 					if (random == 7) {
 						mnumber = rand() % 2;
 						erase();
@@ -84,7 +84,7 @@ int main(int argc, char *argv[])
 			if (ab[py + 1][px] != '#') {
 				a--;
 				py++;
-				random = 0;
+				random = rand() % 8;
 				if (random == 7) {
 					mnumber = rand() % 2;
 					erase();
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
 				if (ab[py][px + 1] != '#') {
 					b--;
 					px++;
-					random = 1;
+					random = rand() % 8;
 					if (random == 7) {
 						mnumber = rand() % 3;
 						erase();
@@ -115,7 +115,7 @@ int main(int argc, char *argv[])
 			if (ab[py][px - 1] != '#') {
 				b++;
 				px--;
-				random = 1;
+				random = rand() % 8;
 				if (random == 7) {
 					mnumber = rand() % 3;
 					erase();

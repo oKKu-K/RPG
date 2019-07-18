@@ -165,7 +165,7 @@ void Battle(int mnumber) {
 
 	Roll(0, myDice);
 
-	srand((unsigned)time(NULL) + 1);
+	srand((unsigned)time(NULL));
 
 	while (1) {
 		eneDice = rand() % 6 + 1;
@@ -268,7 +268,7 @@ void Battle(int mnumber) {
 						if (p.m[i - 1].DP_cons > 0 && p.DP < p.m[i - 1].DP_cons) {
 							attrset(COLOR_PAIR(2));
 						}
-						mvprintw(22 + i, 8, "%d:%s", i, p.m[i - 1].move_name);
+						mvprintw(22 + i, 8, "%d:%s(UŒ‚%d,DPÁ”ï%d)", i, p.m[i - 1].move_name, p.m[i - 1].att_point, p.m[i - 1].DP_cons);
 						attrset(COLOR_PAIR(0));
 					}
 					refresh();
@@ -289,7 +289,7 @@ void Battle(int mnumber) {
 							if (p.m[i - 1].DP_cons > 0 && p.DP < p.m[i - 1].DP_cons) {
 								attrset(COLOR_PAIR(2));
 							}
-							mvprintw(22 + i, 8, "%d:%s", i, p.m[i - 1].move_name);
+							mvprintw(22 + i, 8, "%d:%s(UŒ‚%d,DP%d)", i, p.m[i - 1].move_name,p.m[i-1].att_point,p.m[i-1].DP_cons);
 							attrset(COLOR_PAIR(0));
 						}
 						display();
@@ -331,11 +331,22 @@ void Battle(int mnumber) {
 						}
 					}
 				}
-
 			}
+			
 			erase();
 			monster[mnumber].HP -= p.m[choose - 1].att_point;
 			p.DP -= p.m[choose - 1].DP_cons;
+			
+			srand((unsigned)time(NULL));
+			int critical = rand() % 5;
+			if (critical == 0 && p.m[choose - 1].att_point > 0) {
+				mvprintw(7, 80, "-%d", p.m[choose - 1].att_point * 2);
+				monster[mnumber].HP -= p.m[choose - 1].att_point;
+				mvaddstr(5, 80, "CRITICAL!");
+			}
+			else {
+				mvprintw(7, 80, "-%d", p.m[choose - 1].att_point);
+			}
 			if (p.DP > p.DP_MAX) {
 				p.DP = p.DP_MAX;
 			}
@@ -344,7 +355,7 @@ void Battle(int mnumber) {
 			}
 
 			mvprintw(7, 40, "%s", p.m[choose - 1].move_name);
-			mvprintw(7, 80, "-%d", p.m[choose - 1].att_point);
+			
 
 			display();
 			Sleep(2000 / speed);
@@ -389,21 +400,31 @@ void Battle(int mnumber) {
 					break;
 				}
 			}
-
+			erase();
 
 			p.HP -= monster[mnumber].m[choose - 1].att_point;
 			monster[mnumber].DP -= monster[mnumber].m[choose - 1].DP_cons;
+			
+			srand((unsigned)time(NULL));
+			int critical = rand() % 5;
+			if (critical == 0 && monster[mnumber].m[choose - 1].att_point > 0) {
+				mvprintw(7, 30, "-%d", monster[mnumber].m[choose - 1].att_point * 2);
+				p.HP -= monster[mnumber].m[choose - 1].att_point;
+				mvaddstr(5, 30, "CRITICAL!");
+			}
+			else {
+				mvprintw(7, 30, "-%d", monster[mnumber].m[choose - 1].att_point);
+			}
+
 			if (monster[mnumber].DP > monster[mnumber].DP_MAX) {
 				monster[mnumber].DP = monster[mnumber].DP_MAX;
 			}
 			if (p.HP < 0) {
 				p.HP = 0;
 			}
-			erase();
+		
 
 			mvprintw(7, 40, "%s", monster[mnumber].m[choose - 1].move_name);
-
-			mvprintw(7, 30, "-%d", monster[mnumber].m[choose - 1].att_point);
 
 
 
@@ -424,11 +445,15 @@ void Battle(int mnumber) {
 		}
 
 		if (p.HP <= 0) {
+			//GAME OVER
 			erase();
 			mvprintw(7, 40, "%s win", monster[mnumber].monster_name);
 			display();
 			Sleep(2000);
 			monster[mnumber].HP = monster[mnumber].HP_MAX;
+			monster[mnumber].DP = 0;
+			p.DP = 0;
+			
 			if (autoMode) {
 				modeSwitch();
 			}
@@ -494,7 +519,7 @@ void Battle(int mnumber) {
 						attrset(COLOR_PAIR(2));
 					}
 
-					mvprintw(22 + i, 8, "%d:%s", i, monster[mnumber].m[i - 1].move_name);
+					mvprintw(22 + i, 8, "%d:%s(UŒ‚%d,DP%d)", i, monster[mnumber].m[i - 1].move_name, monster[mnumber].m[i - 1].att_point, monster[mnumber].m[i - 1].DP_cons);
 					attrset(COLOR_PAIR(0));
 				}
 				refresh();
@@ -524,6 +549,8 @@ void Battle(int mnumber) {
 			}
 			refresh();
 			monster[mnumber].HP = monster[mnumber].HP_MAX;
+			monster[mnumber].DP = 0;
+			p.DP = 0;
 			if (autoMode) {
 				modeSwitch();
 			}

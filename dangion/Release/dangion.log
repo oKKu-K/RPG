@@ -1,13 +1,11 @@
-﻿  dangion.cpp
-C:\Program Files (x86)\Windows Kits\8.1\Include\um\wincon.h(118): warning C4005: 'MOUSE_MOVED': マクロが再定義されました。
-  F:\dangion\PDCursesLib\include\curses.h(189): note: 'MOUSE_MOVED' の以前の定義を確認してください
-dangion.cpp(25): warning C4101: 'i': ローカル変数は 1 度も使われていません。
-dangion.cpp(24): warning C4101: 'j': ローカル変数は 1 度も使われていません。
+﻿  battle.cpp
+F:\dangion\PDCursesLib\include\curses.h(189): warning C4005: 'MOUSE_MOVED': マクロが再定義されました。
+  C:\Program Files (x86)\Windows Kits\8.1\Include\um\wincon.h(118): note: 'MOUSE_MOVED' の以前の定義を確認してください
 LINK : warning LNK4098: defaultlib 'LIBCMT' は他のライブラリの使用と競合しています。/NODEFAULTLIB:library を使用してください。
   コード生成しています。
-  2 of 19 functions (10.5%) were compiled, the rest were copied from previous compilation.
+  1 of 19 functions ( 5.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+    1 functions had inline decision re-evaluated but remain unchanged
   コード生成が終了しました。
   dangion.vcxproj -> F:\dangion\Release\dangion.exe
   dangion.vcxproj -> F:\dangion\Release\dangion.pdb (Full PDB)
