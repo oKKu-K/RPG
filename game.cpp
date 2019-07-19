@@ -122,13 +122,13 @@ void dangion_select(){
 			case 'a':
 				erase();
 				if (y == h / 2 - 2) {
-					dangion();
+					dangion(1);
 				}
 				else if (y == h / 2) {
-					dangion();
+					dangion(2);
 				}
 				else if (y == h / 2 + 2) {
-					dangion();
+					dangion(3);
 				}
 				break;
 			case 'b':
