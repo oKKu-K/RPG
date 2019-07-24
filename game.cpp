@@ -1,10 +1,7 @@
-﻿
-
-// ConsoleApplication1.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
+﻿// game1.cpp : コンソール アプリケーションのエントリ ポイントを定義します。
 //
 
-
-//#include "stdafx.h"
+#include "stdafx.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<string.h>
@@ -53,7 +50,7 @@ void dangion_list() {
 
 }
 
-void dangion_select(){
+void dangion_select() {
 	int x, y, w, h;
 	int key;
 	int q = 0;
@@ -122,12 +119,21 @@ void dangion_select(){
 			case 'a':
 				erase();
 				if (y == h / 2 - 2) {
+					p.HP = p.HP_MAX;
+					p.DP = 0;
+					player_data_set();
 					dangion(1);
 				}
 				else if (y == h / 2) {
+					p.HP = p.HP_MAX;
+					p.DP = 0;
+					player_data_set();
 					dangion(2);
 				}
 				else if (y == h / 2 + 2) {
+					p.HP = p.HP_MAX;
+					p.DP = 0;
+					player_data_set();
 					dangion(3);
 				}
 				break;
@@ -145,7 +151,7 @@ void shop() {
 	int c = 0;
 	int key;
 	int q = 0;
-	char str0[35] = "                                  ";
+	char str0[40] = "                                       ";
 	char str1[20] = "いらっしゃいませ";
 	char str2[20] = "なににしますか？";
 	getmaxyx(stdscr, h, w);
@@ -153,7 +159,7 @@ void shop() {
 	x1 = (w / 2 - strlen(str1) / 2);
 	mvaddstr(y1, x1, str1);
 	mvprintw(y1 + 1, x1 + 30, "所持ゴールド：%dG", p.gold);
-	mvaddstr(y1 + 1, x1 - 30, "メニューに戻る：B ");
+	mvaddstr(y1 + 1, x1 - 30, "戻る：B ");
 	y1 = y1 + 1;
 	x1 = (w / 2 - strlen(str2) / 2);
 	mvaddstr(y1, x1, str2);
@@ -161,30 +167,25 @@ void shop() {
 	x = w / 5;
 	y = h / 2 - 7;
 
-	for (i = 1; i <= 5; i++) {
-		mvprintw(y + 2 * i, x, "%s：%s", shop_move[i - 1].move_name, shop_move[i - 1].move_exp);
+	for (i = 1; i <= 6; i++) {
+		mvprintw(y + 2 * i, x, "(%d) %s：%s", i, shop_move[i - 1].move_name, shop_move[i - 1].move_exp);
 	}
-	for (i = 1; i <= 5; i++) {
-		if (s[i - 1] == 0) {
-			mvaddstr(y + 2 * i, x + 55, "SOLD OUT");
-		}
-		else {
-			mvprintw(y + 2 * i, x + 55, "%dG", s[i - 1]);
-		}
+	for (i = 1; i <= 6; i++) {
+			mvprintw(y + 2 * i, x + 60, "%dG", s[i - 1]);
 	}
 
 	while (q == 0) {
 		x = w / 5;
 		y = y + 2;
 		attrset(COLOR_PAIR(1));
-		mvprintw(y, x, "%s", shop_move[0].move_name);
+		mvprintw(y, x, "(1) %s", shop_move[0].move_name);
 		attrset(COLOR_PAIR(0));
 
 		while (q == 0) {
 			key = getch();
 			switch (key) {
 			case KEY_UP:
-				mvprintw(y, x, "%s", shop_move[c].move_name);
+				mvprintw(y, x, "(%d) %s", c+1, shop_move[c].move_name);
 				y = y - 2;
 				c = c - 1;
 				if (y <= h / 2 - 5) {
@@ -192,19 +193,19 @@ void shop() {
 					c = 0;
 				}
 				attrset(COLOR_PAIR(1));
-				mvprintw(y, x, "%s", shop_move[c].move_name);
+				mvprintw(y, x, "(%d) %s", c+1, shop_move[c].move_name);
 				attrset(COLOR_PAIR(0));
 				break;
 			case KEY_DOWN:
-				mvprintw(y, x, "%s", shop_move[c].move_name);
+				mvprintw(y, x, "(%d) %s", c+1, shop_move[c].move_name);
 				y = y + 2;
 				c = c + 1;
-				if (y >= h / 2 + 3) {
-					y = h / 2 + 3;
-					c = 4;
+				if (y >= h / 2 + 5) {
+					y = h / 2 + 5;
+					c = 5;
 				}
 				attrset(COLOR_PAIR(1));
-				mvprintw(y, x, "%s", shop_move[c].move_name);
+				mvprintw(y, x, "(%d) %s", c+1, shop_move[c].move_name);
 				attrset(COLOR_PAIR(0));
 				break;
 
@@ -218,20 +219,17 @@ void shop() {
 				if (p.gold < s[c]) {
 					mvaddstr(y1, x1, "所持金が足りません");
 				}
-				else if (s[c] == 0) {
-					mvaddstr(y1, x1 - 1, "すでに購入しています");
-				}
+				
 				else {
 					p.gold = p.gold - s[c];
-					moveList[count] = shop_move[c];
-					count++;
 					mvaddstr(y1 + 1, (w / 2 - strlen(str1) / 2) + 30, str0);
-					s[c] = 0;
 					mvprintw(y1 + 1, (w / 2 - strlen(str1) / 2) + 30, "所持ゴールド：%dG", p.gold);
-					s[c] = 0;
-					mvaddstr(y1, x1 - 5, str0);
+					mvaddstr(y1, x1 - 10, str0);
+					mvaddstr(y1+1, x1 - 10, str0);
 					mvaddstr(y1, x1 - 3, "お買い上げありがとうございます");
-					mvaddstr(y, x + 55, "SOLD OUT");
+					mvprintw(y1+1, x1 - 3, "%sを装備しました", shop_move[c].move_name);
+					p.m[c] = shop_move[c];
+					player_data_set();
 				}
 				break;
 
@@ -338,3 +336,4 @@ int main()
 		}
 	}
 }
+
